@@ -21,7 +21,3 @@ export async function releaseWakeLock() {
     sentinel = null;
   }
 }
-
-export function isWakeLockActive() {
-  return sentinel != null;
-}

@@ -1,4 +1,4 @@
-const CACHE_NAME = "metronome-cache-v4";
+const CACHE_NAME = "metronome-cache-v5";
 const ASSETS = [
   "./",
   "./index.html",
@@ -14,6 +14,7 @@ const ASSETS = [
   "./js/visualBeat.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
+  "./icons/icon-512-maskable.png",
   "./sounds/click.wav",
   "./sounds/wood.wav",
   "./sounds/beep.wav",

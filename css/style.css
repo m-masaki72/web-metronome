@@ -629,10 +629,6 @@ body {
   font-size: 1rem;
   cursor: pointer;
 }
-.secondary-btn.small {
-  padding: 8px 14px;
-  font-size: 0.9rem;
-}
 
 .quick-slots-section h2,
 .settings-section h2 {

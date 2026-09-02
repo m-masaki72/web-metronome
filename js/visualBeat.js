@@ -13,6 +13,10 @@ export function weightPosToBpm(pos) {
   return Math.round(BPM_MIN + (1 - clamp01(pos)) * (BPM_MAX - BPM_MIN));
 }
 
+export function bpmToWeightPos(bpm) {
+  return clamp01(1 - (bpm - BPM_MIN) / (BPM_MAX - BPM_MIN));
+}
+
 export class VisualBeat {
   // getAudioTime: AudioContext.currentTime を返す関数（振り子をクリック音に厳密同期させる時刻源）
   constructor({ flashEl, numberEl, dotsEl, pendulumEl, weightEl, getAudioTime }) {

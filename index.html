@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#121212">
+<meta name="description" content="インストール不要のシンプルなWebメトロノーム。BPM指定、プリセット、ハプティクス、視覚ビート表示、スピードトレーナー、シャッフルモード対応。">
+<title>Web Metronome</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="flash-overlay" aria-hidden="true"></div>
+
+<main class="app">
+  <header class="app-header">
+    <h1>Metronome</h1>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="テーマ切替">🌙</button>
+  </header>
+
+  <section class="beat-display" aria-live="polite">
+    <div id="beat-number" class="beat-number">1</div>
+    <div id="beat-dots" class="beat-dots"></div>
+  </section>
+
+  <section class="bpm-section">
+    <button id="bpm-down" class="bpm-btn" type="button" aria-label="BPMを下げる">−</button>
+    <div class="bpm-value-wrap">
+      <input id="bpm-input" class="bpm-input" type="number" min="30" max="300" value="120" inputmode="numeric" aria-label="BPM">
+      <span class="bpm-label">BPM</span>
+    </div>
+    <button id="bpm-up" class="bpm-btn" type="button" aria-label="BPMを上げる">＋</button>
+  </section>
+
+  <input id="bpm-slider" class="bpm-slider" type="range" min="30" max="300" value="120" aria-label="BPMスライダー">
+
+  <section class="controls">
+    <button id="play-toggle" class="play-btn" type="button" aria-label="再生/停止">▶</button>
+    <button id="tap-tempo" class="secondary-btn" type="button">TAP</button>
+  </section>
+
+  <section class="presets-section">
+    <h2>プリセット</h2>
+    <div id="preset-list" class="preset-list"></div>
+    <button id="preset-add" class="secondary-btn small" type="button">＋ 保存</button>
+  </section>
+
+  <section class="settings-section">
+    <details>
+      <summary>拍子・音色</summary>
+      <div class="settings-grid">
+        <label>拍子
+          <select id="time-signature">
+            <option value="2">2/4</option>
+            <option value="3">3/4</option>
+            <option value="4" selected>4/4</option>
+            <option value="5">5/4</option>
+            <option value="6">6/8</option>
+            <option value="7">7/8</option>
+          </select>
+        </label>
+        <label>音色
+          <select id="sound-type">
+            <option value="click" selected>Click</option>
+            <option value="wood">Wood</option>
+            <option value="beep">Beep</option>
+            <option value="cowbell">Cowbell</option>
+          </select>
+        </label>
+      </div>
+    </details>
+
+    <details>
+      <summary>視覚・触覚</summary>
+      <div class="settings-grid">
+        <label class="switch-row">画面フラッシュ
+          <input id="visual-toggle" type="checkbox" checked>
+        </label>
+        <label class="switch-row">ハプティクス
+          <input id="haptics-toggle" type="checkbox">
+        </label>
+        <label class="switch-row">サイレントモード（音なし）
+          <input id="silent-toggle" type="checkbox">
+        </label>
+      </div>
+    </details>
+
+    <details>
+      <summary>シャッフル</summary>
+      <div class="settings-grid">
+        <label class="switch-row">シャッフル有効
+          <input id="shuffle-toggle" type="checkbox">
+        </label>
+        <label>スウィング率 <span id="swing-value">60%</span>
+          <input id="swing-range" type="range" min="50" max="75" value="60">
+        </label>
+      </div>
+    </details>
+
+    <details>
+      <summary>カウントイン</summary>
+      <div class="settings-grid">
+        <label class="switch-row">カウントイン有効
+          <input id="countin-toggle" type="checkbox">
+        </label>
+        <label>小節数
+          <select id="countin-bars">
+            <option value="1">1小節</option>
+            <option value="2">2小節</option>
+          </select>
+        </label>
+      </div>
+    </details>
+
+    <details>
+      <summary>スピードトレーナー</summary>
+      <div class="settings-grid">
+        <label class="switch-row">有効化
+          <input id="trainer-toggle" type="checkbox">
+        </label>
+        <label>目標BPM
+          <input id="trainer-target" type="number" min="30" max="300" value="160">
+        </label>
+        <label>増分(BPM)
+          <input id="trainer-step" type="number" min="1" max="20" value="4">
+        </label>
+        <label>何小節ごと
+          <input id="trainer-bars" type="number" min="1" max="16" value="2">
+        </label>
+      </div>
+    </details>
+  </section>
+</main>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

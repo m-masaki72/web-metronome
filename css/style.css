@@ -1,0 +1,297 @@
+:root {
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --surface-2: #262626;
+  --text: #f2f2f2;
+  --text-dim: #9a9a9a;
+  --accent: #ff6b35;
+  --accent-dim: #7a3a1e;
+  --border: #333;
+  --flash: #ff6b35;
+  color-scheme: dark;
+}
+
+:root.light {
+  --bg: #f7f7f7;
+  --surface: #ffffff;
+  --surface-2: #ececec;
+  --text: #1a1a1a;
+  --text-dim: #666;
+  --accent: #ff6b35;
+  --accent-dim: #ffd9c4;
+  --border: #ddd;
+  --flash: #ff6b35;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#flash-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--flash);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999;
+  transition: opacity 80ms ease-out;
+}
+#flash-overlay.on { opacity: 0.35; transition: none; }
+#flash-overlay.accent.on { opacity: 0.6; }
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom));
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 360px) {
+  .beat-number { font-size: 3.2rem; }
+  .bpm-input { font-size: 2.4rem; }
+  .play-btn { width: 76px; height: 76px; font-size: 2rem; }
+}
+
+@media (min-width: 480px) {
+  .app { padding-top: 40px; }
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.app-header h1 {
+  font-size: 1.3rem;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.icon-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.beat-display {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+}
+.beat-number {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.beat-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.beat-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.beat-dots .dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.beat-dots .dot.accent {
+  width: 14px;
+  height: 14px;
+}
+
+.bpm-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.bpm-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+.bpm-btn:active { background: var(--surface-2); }
+
+.bpm-value-wrap {
+  text-align: center;
+  min-width: 140px;
+}
+.bpm-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.bpm-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.bpm-label {
+  display: block;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+.bpm-slider {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.play-btn {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 2.2rem;
+  cursor: pointer;
+}
+.play-btn.playing {
+  background: var(--surface-2);
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}
+
+.secondary-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.secondary-btn.small {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
+
+.presets-section h2,
+.settings-section h2 {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.preset-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.preset-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.preset-chip button {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+}
+
+.settings-section details {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+.settings-section summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 4px 0;
+}
+
+.settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+.settings-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.settings-grid select,
+.settings-grid input[type="number"] {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 1rem;
+}
+.switch-row {
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: space-between;
+}
+.switch-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}

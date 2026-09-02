@@ -1,5 +1,5 @@
 // Web Audio lookaheadスケジューラ（Chris Wilson "A Tale of Two Clocks" パターン）
-import { playClick } from "./sounds.js";
+import { playClick, playBell, preloadSounds } from "./sounds.js";
 
 const LOOKAHEAD_MS = 25;
 const SCHEDULE_AHEAD_SEC = 0.1;
@@ -17,6 +17,8 @@ export class Scheduler {
     this.beatsPerBar = 4;
     this.soundType = "click";
     this.silent = false;
+    this.bellEnabled = false; // 小節頭で通常クリックに重ねてベルを鳴らす
+    this.bellEveryBars = 1;   // 何小節ごとに鳴らすか（1/2/4）
 
     this.shuffleEnabled = false;
     this.swingRatio = 0.6;
@@ -47,6 +49,7 @@ export class Scheduler {
     if (this.audioCtx.state === "suspended") {
       this.audioCtx.resume();
     }
+    preloadSounds(this.audioCtx);
 
     this.beatInBar = 0;
     this.barCount = 0;
@@ -81,6 +84,11 @@ export class Scheduler {
 
   setSilent(silent) {
     this.silent = silent;
+  }
+
+  setBellEnabled(enabled, everyBars) {
+    this.bellEnabled = enabled;
+    if (everyBars != null) this.bellEveryBars = everyBars;
   }
 
   setShuffle(enabled, ratio) {
@@ -126,6 +134,9 @@ export class Scheduler {
         weak,
         gain: isCountIn ? 0.7 : 1,
       });
+      if (this.bellEnabled && accent && this.barCount % this.bellEveryBars === 0) {
+        playBell(this.audioCtx, time, { gain: isCountIn ? 0.7 : 1 });
+      }
     }
 
     // シャッフル: 拍の裏（8分音符位置）にも弱いクリックを追加
@@ -137,7 +148,6 @@ export class Scheduler {
           soundType: this.soundType,
           accent: false,
           weak: true,
-          gain: 0.5,
         });
       }
       this._notifyBeat(offTime, -1, false, true);
@@ -146,11 +156,25 @@ export class Scheduler {
     this._notifyBeat(time, beatIndex, accent, false, isCountIn);
   }
 
+  // 現在のオーディオ時刻（振り子の位相計算用）。未起動時はnull。
+  currentTime() {
+    return this.audioCtx ? this.audioCtx.currentTime : null;
+  }
+
   _notifyBeat(time, beatIndex, accent, isOffBeat, isCountIn) {
     const delayMs = Math.max(0, (time - this.audioCtx.currentTime) * 1000);
     setTimeout(() => {
       if (!this.playing) return;
-      this.onBeat({ beatIndex, accent, isOffBeat, isCountIn, beatsPerBar: this.beatsPerBar });
+      this.onBeat({
+        beatIndex,
+        accent,
+        isOffBeat,
+        isCountIn,
+        beatsPerBar: this.beatsPerBar,
+        // 拍の絶対時刻(AudioContext基準)と拍長。振り子をクリック音に厳密同期させるために使う
+        time,
+        secondsPerBeat: this._secondsPerBeat(),
+      });
     }, delayMs);
   }
 

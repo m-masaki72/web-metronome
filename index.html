@@ -20,9 +20,31 @@
     <button id="theme-toggle" class="icon-btn" type="button" aria-label="テーマ切替">🌙</button>
   </header>
 
-  <section class="beat-display" aria-live="polite">
-    <div id="beat-number" class="beat-number">1</div>
-    <div id="beat-dots" class="beat-dots"></div>
+  <section class="metronome-body" aria-live="polite">
+    <div class="metronome-case">
+      <div class="case-grain" aria-hidden="true"></div>
+      <div class="case-sheen" aria-hidden="true"></div>
+      <div class="case-inner">
+        <div id="metronome-scale" class="metronome-scale">
+          <div class="scale-ticks" aria-hidden="true"></div>
+          <div class="scale-center-mark" aria-hidden="true"></div>
+          <div id="pendulum" class="pendulum">
+            <div class="pendulum-rod"></div>
+            <div id="pendulum-weight" class="pendulum-weight" role="slider" tabindex="0"
+                 aria-label="重りの位置でBPMを調整" aria-valuemin="30" aria-valuemax="300" aria-valuenow="120">
+              <span class="weight-notch" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="scale-pivot" aria-hidden="true"></div>
+        </div>
+        <div class="metronome-plate">
+          <div class="plate-glass" aria-hidden="true"></div>
+          <div id="beat-number" class="beat-number">1</div>
+          <div id="beat-dots" class="beat-dots"></div>
+        </div>
+      </div>
+      <div class="case-base" aria-hidden="true"></div>
+    </div>
   </section>
 
   <section class="bpm-section">
@@ -41,15 +63,15 @@
     <button id="tap-tempo" class="secondary-btn" type="button">TAP</button>
   </section>
 
-  <section class="presets-section">
-    <h2>プリセット</h2>
-    <div id="preset-list" class="preset-list"></div>
-    <button id="preset-add" class="secondary-btn small" type="button">＋ 保存</button>
+  <section class="quick-slots-section">
+    <h2>設定バンク</h2>
+    <div id="quick-slots" class="quick-slots"></div>
+    <p class="quick-slots-hint">タップで切替。現在のバンクは変更のたびに自動保存</p>
   </section>
 
   <section class="settings-section">
     <details>
-      <summary>拍子・音色</summary>
+      <summary>拍子・音色 <span id="summary-time-sound" class="summary-hint"></span></summary>
       <div class="settings-grid">
         <label>拍子
           <select id="time-signature">
@@ -66,17 +88,27 @@
             <option value="click" selected>Click</option>
             <option value="wood">Wood</option>
             <option value="beep">Beep</option>
-            <option value="cowbell">Cowbell</option>
+            <option value="block">Block</option>
+          </select>
+        </label>
+        <label class="switch-row">小節頭ベル
+          <input id="bell-toggle" type="checkbox" checked>
+        </label>
+        <label>ベルの間隔
+          <select id="bell-interval">
+            <option value="1" selected>1小節ごと</option>
+            <option value="2">2小節ごと</option>
+            <option value="4">4小節ごと</option>
           </select>
         </label>
       </div>
     </details>
 
     <details>
-      <summary>視覚・触覚</summary>
+      <summary>視覚・触覚 <span id="summary-visual-haptics" class="summary-hint"></span></summary>
       <div class="settings-grid">
         <label class="switch-row">画面フラッシュ
-          <input id="visual-toggle" type="checkbox" checked>
+          <input id="visual-toggle" type="checkbox">
         </label>
         <label class="switch-row">ハプティクス
           <input id="haptics-toggle" type="checkbox">
@@ -88,7 +120,7 @@
     </details>
 
     <details>
-      <summary>シャッフル</summary>
+      <summary>シャッフル <span id="summary-shuffle" class="summary-hint"></span></summary>
       <div class="settings-grid">
         <label class="switch-row">シャッフル有効
           <input id="shuffle-toggle" type="checkbox">
@@ -100,7 +132,7 @@
     </details>
 
     <details>
-      <summary>カウントイン</summary>
+      <summary>カウントイン <span id="summary-countin" class="summary-hint"></span></summary>
       <div class="settings-grid">
         <label class="switch-row">カウントイン有効
           <input id="countin-toggle" type="checkbox">
@@ -115,7 +147,7 @@
     </details>
 
     <details>
-      <summary>スピードトレーナー</summary>
+      <summary>スピードトレーナー <span id="summary-trainer" class="summary-hint"></span></summary>
       <div class="settings-grid">
         <label class="switch-row">有効化
           <input id="trainer-toggle" type="checkbox">

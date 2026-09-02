@@ -1,4 +1,4 @@
-const CACHE_NAME = "metronome-cache-v1";
+const CACHE_NAME = "metronome-cache-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -10,10 +10,15 @@ const ASSETS = [
   "./js/tapTempo.js",
   "./js/haptics.js",
   "./js/wakeLock.js",
-  "./js/presets.js",
+  "./js/quickSlots.js",
   "./js/visualBeat.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
+  "./sounds/click.wav",
+  "./sounds/wood.wav",
+  "./sounds/beep.wav",
+  "./sounds/block.wav",
+  "./sounds/bell.wav",
 ];
 
 self.addEventListener("install", (event) => {

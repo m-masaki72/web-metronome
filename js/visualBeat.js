@@ -126,7 +126,8 @@ export class VisualBeat {
   }
 
   fire({ beatIndex, accent, isOffBeat, isCountIn, time, secondsPerBeat }) {
-    if (isOffBeat) return; // 裏拍は数字/ドット表示を更新しない（フラッシュのみ軽く）
+    // 裏拍は音のみで視覚には反映しない。フラッシュ頻度が上がると光過敏性リスクが増すため意図的に無視している。
+    if (isOffBeat) return;
 
     // 振り子の再同期: この拍の瞬間に必ず中心(0deg)を通過させる。
     // 通過後に振れる向きは拍ごとに交互（1往復=2拍）。

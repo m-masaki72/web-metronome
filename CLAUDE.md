@@ -54,6 +54,14 @@ angle = dir * MAX_ANGLE * Math.sin(Math.PI * progress)
 
 `js/quickSlots.js`が唯一の永続化ストアで、「保存」という明示的な操作は存在しない。BPM・拍子・音色・各種トグルを含む設定一式を持つ1〜5の固定バンクを切り替えて使うモデルで、選択中バンクの中身は`main.js`の`SETTINGS_WATCH_IDS`にリストされた全input/selectの変更を監視して`persistSettings()`が自動的に上書き保存する（`saveSlot(activeSlot, ...)`）。どのバンクを選択中かも`saveActiveSlot()`で永続化される。新しい設定項目を追加したら、UI要素をこのリストと`collectSettings()`/`applyConfig()`の両方に追加すること。以前存在した名前付きプリセット機能（`presets.js`）と全体設定の自動保存（`settings.js`）はどちらも廃止され、この単一モデルに統合された
 
+### Collapsed settings summary hints
+
+`index.html`の各`<details>`の`<summary>`には`.summary-hint`のspanがあり、`main.js`の`renderSummaries()`が現在値（拍子/音色/ベル、視覚・触覚系トグル、シャッフル、カウントイン、トレーナー）を要約表示する。折りたたんだまま現在の設定を把握できるようにするための機能で、`persistSettings()`（値変更時）と`applyConfig()`（バンク切替・初期ロード時）の両方から呼ばれる。新しい設定項目を追加する際、この要約に含めたい場合は`renderSummaries()`にも追記すること。CSS側は`details[open] .summary-hint { display: none }`で開いている間は隠す。
+
+### Flash overlay: light-theme opacity is intentionally low (accessibility)
+
+`#flash-overlay`の不透明度は`--flash-opacity`/`--flash-opacity-accent`（`css/style.css`の`:root`/`:root.light`）で管理する。ライトテーマの背景(`#f7f7f7`)は暗色の`--flash`(`#3d8c72`)と合成した際の相対輝度差がダークテーマよりずっと大きく、フラッシュ回数によってはWCAG 2.3.1（3 Flashes閾値、輝度差10%未満に収める必要がある）に抵触しうる。そのためライトテーマのみ`0.04`/`0.07`まで下げてある（ダークテーマは`0.14`/`0.24`のままで安全域）。**この不透明度を上げる変更をする場合は、背景色との合成後輝度差が10%を超えないか確認すること**。根本対応（画面全体ではなく周辺フレームのみ光らせる等、面積を絞って閾値解析自体を不要にする案）は未着手のTODO。
+
 ### PWA / offline
 
 `sw.js`はcache-firstのService Worker。`ASSETS`配列に全静的ファイル（JS/CSS/音声/アイコン）を列挙しており、**新しいJSファイルや音声ファイルを追加したら`ASSETS`に追記し、`CACHE_NAME`のバージョンをインクリメントする**（インクリメントし忘れると古いキャッシュが残り続ける）。

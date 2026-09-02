@@ -63,6 +63,7 @@ const scheduler = new Scheduler({
       els.bpmInput.value = info.bpm;
       els.bpmSlider.value = info.bpm;
       visualBeat.setPendulumBpm(info.bpm);
+      persistSettings();
       return;
     }
     visualBeat.fire(info);
@@ -132,6 +133,7 @@ els.tapTempo.addEventListener("click", () => {
     els.pendulumWeight.classList.remove("dragging");
     window.removeEventListener("pointermove", onMove);
     window.removeEventListener("pointerup", endDrag);
+    window.removeEventListener("pointercancel", endDrag);
     if (wasPlaying) visualBeat.startPendulum();
     persistSettings();
   }
@@ -145,6 +147,7 @@ els.tapTempo.addEventListener("click", () => {
     onMove(e);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", endDrag);
+    window.addEventListener("pointercancel", endDrag);
   });
 
   // キーボード操作（アクセシビリティ）
@@ -292,7 +295,8 @@ function persistSettings() {
 function renderSummaries() {
   const timeSigLabel = els.timeSignature.selectedOptions[0].text;
   const soundLabel = els.soundType.selectedOptions[0].text;
-  els.summaryTimeSound.textContent = `${timeSigLabel}・${soundLabel}${els.bellToggle.checked ? "・ベル" : ""}`;
+  const bellHint = els.bellToggle.checked ? `・ベル(${els.bellInterval.value}小節毎)` : "";
+  els.summaryTimeSound.textContent = `${timeSigLabel}・${soundLabel}${bellHint}`;
 
   const visualHapticsOn = [
     els.visualToggle.checked && "フラッシュ",

@@ -4,6 +4,7 @@ import { hapticsSupported, vibrateBeat } from "./haptics.js";
 import { acquireWakeLock, releaseWakeLock } from "./wakeLock.js";
 import { loadSlots, saveSlot, loadActiveSlot, saveActiveSlot, SLOT_COUNT } from "./quickSlots.js";
 import { VisualBeat, weightPosToBpm } from "./visualBeat.js";
+import { clampBpm } from "./bpmRange.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -79,10 +80,6 @@ if (!hapticsSupported) {
   els.hapticsToggle.checked = false;
   els.hapticsToggle.disabled = true;
   els.hapticsToggle.parentElement.title = "この端末/ブラウザはハプティクス非対応ですわ";
-}
-
-function clampBpm(v) {
-  return Math.max(30, Math.min(300, v));
 }
 
 function setBpm(v) {
@@ -206,7 +203,8 @@ function syncTrainer() {
   el.addEventListener("change", syncTrainer)
 );
 
-async function play() {
+// els.*の現在値を丸ごとschedulerに反映する（play()と設定バンク適用の両方で使う共通処理）
+function applySchedulerSettings() {
   scheduler.setBpm(parseInt(els.bpmInput.value, 10));
   scheduler.setBeatsPerBar(parseInt(els.timeSignature.value, 10));
   scheduler.setSoundType(els.soundType.value);
@@ -215,6 +213,10 @@ async function play() {
   scheduler.setShuffle(els.shuffleToggle.checked, els.swingRange.value / 100);
   scheduler.setCountIn(els.countinToggle.checked, parseInt(els.countinBars.value, 10));
   syncTrainer();
+}
+
+async function play() {
+  applySchedulerSettings();
 
   scheduler.start();
   visualBeat.setPendulumBpm(parseInt(els.bpmInput.value, 10));
@@ -265,25 +267,34 @@ els.themeToggle.addEventListener("click", () => {
 // 選択中バンクの中身はBPM等を変更するたびに自動的に上書き保存される（明示的な保存操作はない）。
 let activeSlot = loadActiveSlot();
 
+// 設定バンクに永続化する項目の唯一の定義。collectSettings/applyConfig/変更監視の3箇所はここから導出する。
+// bool型はtypeof判定でfalseも正しく復元し、それ以外はfalsy値（0や空文字）なら保存値を無視してデフォルトのまま残す（既存挙動を踏襲）。
+const SETTINGS_FIELDS = [
+  { key: "bpm", el: () => els.bpmInput, type: "number", extraEls: [() => els.bpmSlider] },
+  { key: "timeSignature", el: () => els.timeSignature, type: "string" },
+  { key: "soundType", el: () => els.soundType, type: "string" },
+  { key: "bell", el: () => els.bellToggle, type: "bool" },
+  { key: "bellInterval", el: () => els.bellInterval, type: "string" },
+  { key: "visual", el: () => els.visualToggle, type: "bool" },
+  { key: "haptics", el: () => els.hapticsToggle, type: "bool", canApply: () => !els.hapticsToggle.disabled },
+  { key: "silent", el: () => els.silentToggle, type: "bool" },
+  { key: "shuffle", el: () => els.shuffleToggle, type: "bool" },
+  { key: "swing", el: () => els.swingRange, type: "string", onApply: (v) => { els.swingValue.textContent = `${v}%`; } },
+  { key: "countin", el: () => els.countinToggle, type: "bool" },
+  { key: "countinBars", el: () => els.countinBars, type: "string" },
+  { key: "trainer", el: () => els.trainerToggle, type: "bool" },
+  { key: "trainerTarget", el: () => els.trainerTarget, type: "string" },
+  { key: "trainerStep", el: () => els.trainerStep, type: "string" },
+  { key: "trainerBars", el: () => els.trainerBars, type: "string" },
+];
+
 function collectSettings() {
-  return {
-    bpm: parseInt(els.bpmInput.value, 10),
-    timeSignature: els.timeSignature.value,
-    soundType: els.soundType.value,
-    bell: els.bellToggle.checked,
-    bellInterval: els.bellInterval.value,
-    visual: els.visualToggle.checked,
-    haptics: els.hapticsToggle.checked,
-    silent: els.silentToggle.checked,
-    shuffle: els.shuffleToggle.checked,
-    swing: els.swingRange.value,
-    countin: els.countinToggle.checked,
-    countinBars: els.countinBars.value,
-    trainer: els.trainerToggle.checked,
-    trainerTarget: els.trainerTarget.value,
-    trainerStep: els.trainerStep.value,
-    trainerBars: els.trainerBars.value,
-  };
+  const out = {};
+  for (const f of SETTINGS_FIELDS) {
+    const el = f.el();
+    out[f.key] = f.type === "bool" ? el.checked : f.type === "number" ? parseInt(el.value, 10) : el.value;
+  }
+  return out;
 }
 
 function persistSettings() {
@@ -312,37 +323,18 @@ function renderSummaries() {
 
 // 保存済みの設定一式をUI/スケジューラに適用する
 function applyConfig(s) {
-  if (s.bpm) {
-    els.bpmInput.value = s.bpm;
-    els.bpmSlider.value = s.bpm;
+  for (const f of SETTINGS_FIELDS) {
+    const v = s[f.key];
+    const canApply = f.canApply ? f.canApply() : true;
+    const hasValue = f.type === "bool" ? typeof v === "boolean" : !!v;
+    if (!hasValue || !canApply) continue;
+    const el = f.el();
+    if (f.type === "bool") el.checked = v; else el.value = v;
+    (f.extraEls || []).forEach((getEl) => { getEl().value = v; });
+    if (f.onApply) f.onApply(v);
   }
-  if (s.timeSignature) els.timeSignature.value = s.timeSignature;
-  if (s.soundType) els.soundType.value = s.soundType;
-  if (typeof s.bell === "boolean") els.bellToggle.checked = s.bell;
-  if (s.bellInterval) els.bellInterval.value = s.bellInterval;
-  if (typeof s.visual === "boolean") els.visualToggle.checked = s.visual;
-  if (typeof s.haptics === "boolean" && !els.hapticsToggle.disabled) els.hapticsToggle.checked = s.haptics;
-  if (typeof s.silent === "boolean") els.silentToggle.checked = s.silent;
-  if (typeof s.shuffle === "boolean") els.shuffleToggle.checked = s.shuffle;
-  if (s.swing) {
-    els.swingRange.value = s.swing;
-    els.swingValue.textContent = `${s.swing}%`;
-  }
-  if (typeof s.countin === "boolean") els.countinToggle.checked = s.countin;
-  if (s.countinBars) els.countinBars.value = s.countinBars;
-  if (typeof s.trainer === "boolean") els.trainerToggle.checked = s.trainer;
-  if (s.trainerTarget) els.trainerTarget.value = s.trainerTarget;
-  if (s.trainerStep) els.trainerStep.value = s.trainerStep;
-  if (s.trainerBars) els.trainerBars.value = s.trainerBars;
 
-  scheduler.setBpm(parseInt(els.bpmInput.value, 10));
-  scheduler.setBeatsPerBar(parseInt(els.timeSignature.value, 10));
-  scheduler.setSoundType(els.soundType.value);
-  scheduler.setSilent(els.silentToggle.checked);
-  syncBell();
-  scheduler.setShuffle(els.shuffleToggle.checked, els.swingRange.value / 100);
-  scheduler.setCountIn(els.countinToggle.checked, parseInt(els.countinBars.value, 10));
-  syncTrainer();
+  applySchedulerSettings();
 
   els.pendulumWeight.setAttribute("aria-valuenow", els.bpmInput.value);
   visualBeat.setEnabled(els.visualToggle.checked);
@@ -374,16 +366,7 @@ function renderSlotTabs() {
 applyConfig(loadSlots()[activeSlot]);
 renderSlotTabs();
 
-const SETTINGS_WATCH_IDS = [
-  "bpm-input", "bpm-slider", "time-signature", "sound-type",
-  "bell-toggle", "bell-interval",
-  "visual-toggle", "haptics-toggle", "silent-toggle",
-  "shuffle-toggle", "swing-range",
-  "countin-toggle", "countin-bars",
-  "trainer-toggle", "trainer-target", "trainer-step", "trainer-bars",
-];
-SETTINGS_WATCH_IDS.forEach((id) => {
-  const el = $(id);
+SETTINGS_FIELDS.flatMap((f) => [f.el(), ...(f.extraEls || []).map((getEl) => getEl())]).forEach((el) => {
   el.addEventListener("change", persistSettings);
   if (el.type === "range" || el.type === "number") {
     el.addEventListener("input", persistSettings);

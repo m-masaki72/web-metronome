@@ -1,5 +1,6 @@
 // Web Audio lookaheadスケジューラ（Chris Wilson "A Tale of Two Clocks" パターン）
 import { playClick, playBell, preloadSounds } from "./sounds.js";
+import { clampBpm } from "./bpmRange.js";
 
 const LOOKAHEAD_MS = 25;
 const SCHEDULE_AHEAD_SEC = 0.1;
@@ -71,7 +72,7 @@ export class Scheduler {
   }
 
   setBpm(bpm) {
-    this.bpm = Math.max(30, Math.min(300, bpm));
+    this.bpm = clampBpm(bpm);
   }
 
   setBeatsPerBar(n) {

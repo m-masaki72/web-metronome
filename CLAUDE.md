@@ -52,7 +52,7 @@ angle = dir * MAX_ANGLE * Math.sin(Math.PI * progress)
 
 ### Persistence: 5 config banks, single localStorage-backed store
 
-`js/quickSlots.js`が唯一の永続化ストアで、「保存」という明示的な操作は存在しない。BPM・拍子・音色・各種トグルを含む設定一式を持つ1〜5の固定バンクを切り替えて使うモデルで、選択中バンクの中身は`main.js`の`SETTINGS_WATCH_IDS`にリストされた全input/selectの変更を監視して`persistSettings()`が自動的に上書き保存する（`saveSlot(activeSlot, ...)`）。どのバンクを選択中かも`saveActiveSlot()`で永続化される。新しい設定項目を追加したら、UI要素をこのリストと`collectSettings()`/`applyConfig()`の両方に追加すること。以前存在した名前付きプリセット機能（`presets.js`）と全体設定の自動保存（`settings.js`）はどちらも廃止され、この単一モデルに統合された
+`js/quickSlots.js`が唯一の永続化ストアで、「保存」という明示的な操作は存在しない。BPM・拍子・音色・各種トグルを含む設定一式を持つ1〜5の固定バンクを切り替えて使うモデルで、`main.js`の`SETTINGS_FIELDS`配列（1項目=1エントリ、キー名・対象els・型を持つ）が唯一の定義で、`collectSettings()`/`applyConfig()`/変更監視の登録はすべてこの配列から導出される。選択中バンクの中身は変更監視経由で`persistSettings()`が自動的に上書き保存する（`saveSlot(activeSlot, ...)`）。どのバンクを選択中かも`saveActiveSlot()`で永続化される。新しい設定項目を追加したら`SETTINGS_FIELDS`に1エントリ追加するだけでよい。以前存在した名前付きプリセット機能（`presets.js`）と全体設定の自動保存（`settings.js`）はどちらも廃止され、この単一モデルに統合された
 
 ### Collapsed settings summary hints
 

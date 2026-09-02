@@ -1,8 +1,7 @@
 // 画面フラッシュ・拍数表示・振り子アニメーションの制御
+import { BPM_MIN, BPM_MAX } from "./bpmRange.js";
 
 const MAX_ANGLE = 24; // 振り子の最大振れ角(deg)
-const BPM_MIN = 30;
-const BPM_MAX = 300;
 
 // 重り位置(0=支点寄り/速い 〜 1=先端/遅い) <-> BPM の相互変換。
 // ドラッグ操作(main.js)とアニメーション同期(setPendulumBpm)の両方から使う共通ロジック。

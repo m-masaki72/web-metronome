@@ -1,10 +1,11 @@
-const CACHE_NAME = "metronome-cache-v5";
+const CACHE_NAME = "metronome-cache-v6";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./css/style.css",
   "./js/main.js",
+  "./js/bpmRange.js",
   "./js/scheduler.js",
   "./js/sounds.js",
   "./js/tapTempo.js",

@@ -1,5 +1,7 @@
 # Web Metronome
 
+🔗 https://m-masaki72.github.io/web-metronome/
+
 インストール不要・スマホ対応のシンプルなWebメトロノーム。ビルド不要（素のHTML/CSS/JS）。
 
 ## 機能

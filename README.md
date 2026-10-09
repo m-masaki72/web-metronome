@@ -39,3 +39,8 @@ python -m http.server 8000
 
 ## 公開（GitHub Pages）
 リポジトリの Settings > Pages で、ソースを `main` ブランチ / ルートディレクトリに設定する。
+
+## 紹介ページ
+
+- [制作物ページ（Mori Lab）](https://morilab-garage.com/projects/web-metronome/)
+- [開発ブログ記事（はてなブログ）](https://mementomori7272.hatenablog.com/entry/2026/09/03/030002)

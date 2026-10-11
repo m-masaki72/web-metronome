@@ -169,5 +169,37 @@
 <script type="module" src="js/main.js"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f9c19e1133b547578ea0f0761266f537"}'></script>
+<style>
+.mlg-about{box-sizing:border-box;max-width:720px;margin:0 auto;padding:2.5rem 1.25rem 2rem;font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;font-size:15px;line-height:1.85;color:inherit;text-align:left}
+.mlg-about *{box-sizing:border-box}
+.mlg-about h2{font-size:1.35rem;line-height:1.4;margin:0 0 .75rem;font-weight:700}
+.mlg-about h3{font-size:1.05rem;margin:1.75rem 0 .5rem;font-weight:700}
+.mlg-about p{margin:.5rem 0}
+.mlg-about ul,.mlg-about ol{margin:.5rem 0;padding-left:1.4em}
+.mlg-about ul{list-style:disc}
+.mlg-about ol{list-style:decimal}
+.mlg-about li{margin:.2rem 0}
+.mlg-about dt{font-weight:700;margin-top:.75rem}
+.mlg-about dd{margin:.2rem 0 0}
+.mlg-about a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.mlg-credit{margin-top:2rem;padding-top:1rem;border-top:1px solid currentColor;border-top-color:color-mix(in srgb,currentColor 25%,transparent);font-size:13px;opacity:.85;display:flex;flex-wrap:wrap;gap:.25rem 1rem}
+#mlg-about-dialog{width:min(92vw,720px);max-height:85dvh;padding:0;border:0;border-radius:16px;background:#fff;color:#1a1a1a;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+#mlg-about-dialog::backdrop{background:rgba(0,0,0,.55)}
+#mlg-about-dialog .mlg-about{padding-top:1.5rem}
+.mlg-close{position:sticky;top:0;float:right;margin:.5rem .5rem 0 0;width:44px;height:44px;border:0;border-radius:50%;background:#eee;color:#1a1a1a;font-size:22px;cursor:pointer}
+.mlg-open{position:fixed;z-index:2147483000;width:44px;height:44px;padding:0;border:0;border-radius:50%;font-size:20px !important;background:rgba(0,0,0,.6);color:#fff;font:600 13px/1 system-ui,sans-serif;cursor:pointer;backdrop-filter:blur(4px)}
+.mlg-open:focus-visible,.mlg-close:focus-visible{outline:3px solid #27ff0b;outline-offset:2px}
+</style>
+<section class="mlg-about" aria-labelledby="mlg-about-title">
+<h2 id="mlg-about-title">Web Metronome について</h2>
+<p>スマートフォンや PC のブラウザで使えるメトロノームです。インストールは不要で、ホーム画面に追加すればオフラインでも起動できます。</p><p>音は少し先の拍まで AudioContext の時刻で予約して鳴らすので、タブを切り替えてもリズムがぶれにくくなっています。振り子は実物のメトロノームと同じく、中央を通過する瞬間に音が鳴ります。</p>
+<h3>使い方</h3>
+<ol><li>BPM を設定して再生ボタンを押します。</li><li>「拍子・音色」のパネルで拍子や音色、ベルの間隔を選びます。</li><li>よく使う設定は 1〜5 のバンクに残しておき、次からはボタン 1 つで呼び出します。</li></ol>
+<h3>主な機能・特徴</h3>
+<ul><li>BPM 30〜300。±ボタン・スライダー・直接入力・振り子の重りのドラッグ・タップテンポで設定</li><li>2/4・3/4・4/4・5/4・6/8・7/8 拍子と 1 拍目のアクセント</li><li>Click / Wood / Beep / Block の 4 種類の音色</li><li>1・2・4 小節ごとの小節頭ベル</li><li>テンポ・拍子・音色を保存できる 5 つの設定バンク</li><li>一定の小節ごとにテンポを上げるスピードトレーナー</li><li>カウントインとシャッフル（スウィング）</li><li>画面フラッシュ・振動・画面スリープ防止・ダークモード</li></ul>
+<h3>よくある質問</h3>
+<dl><dt>料金はかかりますか？</dt><dd>かかりません。すべての機能を無料で、会員登録やアプリのインストールなしで使えます。</dd><dt>スマホの画面が消えると止まりますか？</dt><dd>再生中は画面のスリープを防ぐので、練習中に画面が消えて止まることはありません（対応ブラウザのみ）。</dd><dt>オフラインでも使えますか？</dt><dd>はい。一度開いてホーム画面に追加しておけば、電波のない場所でもアプリのように起動できます。</dd><dt>曲のテンポが分からないときは？</dt><dd>タップテンポを使うと、曲に合わせてボタンを叩くだけで BPM を設定できます。</dd><dt>音が鳴らないときは？</dt><dd>端末の音量とマナーモードを確認してください。iPhone ではサイレントモードがオンだと、ブラウザの音が鳴らないことがあります。画面フラッシュによる視覚メトロノームも使えます。</dd></dl>
+<p class="mlg-credit"><span>制作: <a href="https://morilab-garage.com/">MasakiMori（Mori Lab）</a></span><a href="https://morilab-garage.com/projects/web-metronome/">制作の背景・技術構成</a><a href="https://morilab-garage.com/projects/">ほかの制作物</a><a href="https://morilab-garage.com/privacy/">プライバシーポリシー</a></p>
+</section>
 </body>
 </html>
